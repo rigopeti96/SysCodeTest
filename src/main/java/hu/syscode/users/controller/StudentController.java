@@ -1,7 +1,7 @@
 package hu.syscode.users.controller;
 
 import hu.syscode.users.data.Student;
-import hu.syscode.users.Exception.StudentException;
+import hu.syscode.users.exception.StudentException;
 import hu.syscode.users.repository.StudentRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

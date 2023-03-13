@@ -1,4 +1,4 @@
-package hu.syscode.users.Exception;
+package hu.syscode.users.exception;
 
 /**
  * Custom exception class to send to the client if something went wrong
