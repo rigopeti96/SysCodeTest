@@ -3,6 +3,8 @@ package hu.syscode.users.controller;
 import hu.syscode.users.data.Student;
 import hu.syscode.users.exception.StudentException;
 import hu.syscode.users.repository.StudentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import java.util.regex.Pattern;
 @RequestMapping("/api/student")
 public class StudentController {
     private final StudentRepository studentRepository;
+    Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     /**
      * Initialize repository
@@ -27,6 +30,7 @@ public class StudentController {
      */
     @GetMapping("/getStudents")
     public List<Student> getStudents(){
+        logger.debug("List request");
         return studentRepository.findAllBy();
     }
 
@@ -39,11 +43,16 @@ public class StudentController {
     public String modifyStudent(
             @RequestBody Student modifiedStudent
     ) throws StudentException {
+        logger.debug("Modify request");
         if(modifiedStudent.getId() != null){
+            logger.debug("modifiedStudent UUID: " + modifiedStudent.getId());
             Student actStudent = studentRepository.findStudentById(UUID.fromString(String.valueOf(modifiedStudent.getId())));
             if(actStudent == null){
                 throw new StudentException("Student with given Id does not exits!");
             }
+
+            logger.debug("modifiedStudent Full name: " + modifiedStudent.getFullName());
+            logger.debug("modifiedStudent Email address " + modifiedStudent.getEmailAddress());
             if(modifiedStudent.getFullName() != null){
                 actStudent.setFullName(modifiedStudent.getFullName());
             }
@@ -69,10 +78,14 @@ public class StudentController {
     public String addStudent(
             @RequestBody Student newStudent
     ) throws StudentException {
+        logger.debug("Create request");
         if(newStudent.getId() != null){
-            throw new StudentException("Student with given Id does not exits!");
+            logger.debug("addStudent UUID: " + newStudent.getId());
+            throw new StudentException("Cannot add user with UUID!");
         }
 
+        logger.debug("newStudent Full name: " + newStudent.getFullName());
+        logger.debug("newStudent Email address " + newStudent.getEmailAddress());
         if(newStudent.getEmailAddress() != null && !patternMatches(newStudent.getEmailAddress(), "^(.+)@(\\S+)$")){
             throw new StudentException("Email address is not valid!");
         }
@@ -91,10 +104,11 @@ public class StudentController {
     public String deleteStudent(
             @RequestBody Student removeStudent
     ) throws StudentException {
+        logger.debug("Delete request");
         try {
-            Student removeableStudent = studentRepository.findStudentById(UUID.fromString(String.valueOf(removeStudent.getId())));
-            System.out.println("Removeable student: " + removeableStudent.getFullName());
-            studentRepository.delete(removeableStudent);
+            Student removableStudent = studentRepository.findStudentById(UUID.fromString(String.valueOf(removeStudent.getId())));
+            logger.debug("Removable student: " + removableStudent.getFullName());
+            studentRepository.delete(removableStudent);
             return "Remove student was successful!";
         } catch (Exception e){
             throw new StudentException("Student was not found!");
