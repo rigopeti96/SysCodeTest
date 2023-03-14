@@ -28,6 +28,7 @@ Request body:
 
 ### Read: 
 /api/student/getStudents
+
 No request body is required.
 
 ### Update: 
