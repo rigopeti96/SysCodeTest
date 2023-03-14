@@ -62,7 +62,7 @@ public class StudentController {
             }
 
             studentRepository.save(actStudent);
-            return "Save was successful!";
+            return "Student modification was successful!";
         }
 
         throw new StudentException("ID field must not be empty!");

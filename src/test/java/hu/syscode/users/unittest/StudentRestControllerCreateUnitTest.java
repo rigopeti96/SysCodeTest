@@ -110,4 +110,28 @@ public class StudentRestControllerCreateUnitTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    /**
+     * Test case: try to create a user with an incorrect email address
+     * Expected result: server throw an exception with the declared message
+     */
+    @Test
+    public void createStudentWithIncorrectEmailAddress2_ExpectedError(){
+        String exampleCourseJson = "{\"name\":\"Student Alice\",\"emailAddress\":\"incorrectEmailAddress@\"}";
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/student/addStudent")
+                .accept(MediaType.APPLICATION_JSON).content(exampleCourseJson)
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+        });
+
+        String expectedMessage = "Email address is not valid!";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
 }
