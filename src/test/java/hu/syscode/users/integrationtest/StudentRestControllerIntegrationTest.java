@@ -1,61 +1,57 @@
 package hu.syscode.users.integrationtest;
 
-import hu.syscode.users.UsersApplication;
+import hu.syscode.users.controller.StudentController;
 import hu.syscode.users.data.Student;
 import hu.syscode.users.repository.StudentRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.MOCK,
-        classes = UsersApplication.class)
-@AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application-integrationTest.properties")
+@WebMvcTest(StudentController.class)
 public class StudentRestControllerIntegrationTest {
+
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
+    @MockBean
     private StudentRepository repository;
 
     @Test
-    /*public void givenStudent_whenGetEmployees_thenStatus200()
-            throws Exception {
+    public void givenStudent_whenGetStudent_thenReturnJsonArray() throws Exception {
 
-        createTestStudent();
+        Student alice = new Student();
+        alice.setFullName("Student Alice");
+        alice.setEmailAddress("student.alice@gmail.com");
+        repository.save(alice);
 
-        mvc.perform(get("/api/getStudents")
-                        .contentType(MediaType.APPLICATION_JSON))
+        List<Student> allStudent = List.of(alice);
+
+        given(repository.findAllByOrderByFullName()).willReturn(allStudent);
+        RequestBuilder requestListBuilder = MockMvcRequestBuilders
+                .get("/api/student/getStudents")
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(requestListBuilder)
                 .andExpect(status().isOk())
-                .andExpect(content()
-                        .contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name", is("bob")));
-    }*/
-
-    private void createTestStudent() {
-        Student studentAlice = new Student();
-        studentAlice.setEmailAddress("student.alice@gmail.com");
-        studentAlice.setFullName("Student Alice");
-        repository.save(studentAlice);
-
-        Student studentBob = new Student();
-        studentBob.setEmailAddress("student.bob@gmail.com");
-        studentBob.setFullName("Student Bob");
-        repository.save(studentBob);
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].fullName").value("Student Alice"))
+                .andExpect(jsonPath("$[0].emailAddress").value("student.alice@gmail.com"));
     }
-
-
 }

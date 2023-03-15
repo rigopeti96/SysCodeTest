@@ -105,11 +105,11 @@ public class StudentRestControllerListUnitTest {
     @Test
     public void listStudentsAfterAddTwoStudentsAndDeleteOne() throws Exception {
         //List the empty database
-        RequestBuilder requestModifyBuilder = MockMvcRequestBuilders
+        RequestBuilder requestListBuilder = MockMvcRequestBuilders
                 .get("/api/student/getStudents")
                 .accept(MediaType.APPLICATION_JSON);
 
-        MvcResult listResult = mockMvc.perform(requestModifyBuilder).andReturn();
+        MvcResult listResult = mockMvc.perform(requestListBuilder).andReturn();
         MockHttpServletResponse listResponse = listResult.getResponse();
 
         assertEquals(HttpStatus.OK.value(), listResponse.getStatus());
@@ -128,7 +128,7 @@ public class StudentRestControllerListUnitTest {
         repository.save(studentBob);
 
         //List the full database after add the two students
-        MvcResult listResultAfterAddStudent = mockMvc.perform(requestModifyBuilder).andReturn();
+        MvcResult listResultAfterAddStudent = mockMvc.perform(requestListBuilder).andReturn();
         MockHttpServletResponse listResponseAddStudent = listResultAfterAddStudent.getResponse();
 
         List<Student> studentNotEmptyList = repository.findAllByOrderByFullName();
@@ -163,7 +163,7 @@ public class StudentRestControllerListUnitTest {
         repository.delete(studentBob);
 
         //List the database after delete
-        MvcResult listResultAfterRemoveStudent = mockMvc.perform(requestModifyBuilder).andReturn();
+        MvcResult listResultAfterRemoveStudent = mockMvc.perform(requestListBuilder).andReturn();
         MockHttpServletResponse listResponseRemoveStudent = listResultAfterRemoveStudent.getResponse();
 
         List<Student> studentNotEmptyListAfterRemove = repository.findAllByOrderByFullName();
