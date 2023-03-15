@@ -48,7 +48,7 @@ public class StudentRestControllerModifyUnitTest {
 
         //Get student and check its size
         List<Student> studentList = repository.findAllBy();
-        assertEquals(studentList.size(), 1);
+        assertEquals(1, studentList.size());
 
         //Modify the created student
         //The id should be in string format
@@ -64,7 +64,12 @@ public class StudentRestControllerModifyUnitTest {
         MockHttpServletResponse modifyResponse = modifyResult.getResponse();
 
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
-        assertEquals(modifyResponse.getContentAsString(), expectedModifyMessage);
+        assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
+
+        List<Student> studentModifiedList = repository.findAllBy();
+        Student modifiedStudent = studentModifiedList.get(0);
+        assertEquals(studentList.get(0).getId().toString(), modifiedStudent.getId().toString());
+        assertEquals("student.alice2@gmail.com", modifiedStudent.getEmailAddress());
 
         //reset database for further tests
         repository.deleteAll();
@@ -82,11 +87,11 @@ public class StudentRestControllerModifyUnitTest {
 
         //Get student and check its size
         List<Student> studentList = repository.findAllBy();
-        assertEquals(studentList.size(), 1);
+        assertEquals(1, studentList.size());
 
         //Modify the created student
         //The id should be in string format
-        String exampleCourseModifyJson = "{\"id\":\""+ studentList.get(0).getId().toString() +"\",\"fullName\":\"Student Alice Emily\",\"emailAddress\":\"student.adrian@gmail.com\"}";
+        String exampleCourseModifyJson = "{\"id\":\""+ studentList.get(0).getId().toString() +"\",\"fullName\":\"Student Alice Emily\",\"emailAddress\":\"student.alice.emily@gmail.com\"}";
         String expectedModifyMessage = "Student modification was successful!";
 
         RequestBuilder requestModifyBuilder = MockMvcRequestBuilders
@@ -98,7 +103,13 @@ public class StudentRestControllerModifyUnitTest {
         MockHttpServletResponse modifyResponse = modifyResult.getResponse();
 
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
-        assertEquals(modifyResponse.getContentAsString(), expectedModifyMessage);
+        assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
+
+        List<Student> studentModifiedList = repository.findAllBy();
+        Student modifiedStudent = studentModifiedList.get(0);
+        assertEquals(studentList.get(0).getId().toString(), modifiedStudent.getId().toString());
+        assertEquals("Student Alice Emily", modifiedStudent.getFullName());
+        assertEquals("student.alice.emily@gmail.com", modifiedStudent.getEmailAddress());
 
         //reset database for further tests
         repository.deleteAll();
@@ -122,11 +133,23 @@ public class StudentRestControllerModifyUnitTest {
 
         //Get student and check its size
         List<Student> studentList = repository.findAllBy();
-        assertEquals(studentList.size(), 2);
+        assertEquals(2, studentList.size());
+
+        //Get both students' id
+        String aliceId = "";
+        String bobId = "";
+        for (Student student : studentList) {
+            if (student.getFullName().equals("Student Alice")) {
+                aliceId = student.getId().toString();
+            }
+            if (student.getFullName().equals("Student Bob")) {
+                bobId = student.getId().toString();
+            }
+        }
 
         //Modify the created student
         //The id should be in string format
-        String exampleCourseModifyJson = "{\"id\":\""+ studentList.get(0).getId().toString() +"\",\"fullName\":\"Student Adrian\"}";
+        String exampleCourseModifyJson = "{\"id\":\""+ aliceId +"\",\"fullName\":\"Student Alice Emily\"}";
         String expectedModifyMessage = "Student modification was successful!";
 
         RequestBuilder requestModifyBuilder = MockMvcRequestBuilders
@@ -138,10 +161,22 @@ public class StudentRestControllerModifyUnitTest {
         MockHttpServletResponse modifyResponse = modifyResult.getResponse();
 
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
-        assertEquals(modifyResponse.getContentAsString(), expectedModifyMessage);
+        assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
 
         List<Student> studentModifiedList = repository.findAllBy();
-        assertEquals(studentModifiedList.size(), 2);
+        assertEquals(2, studentModifiedList.size());
+
+        //Check if the modification was succesful
+        Student modifiedStudent = repository.findStudentById(UUID.fromString(aliceId));
+        assertEquals(aliceId, modifiedStudent.getId().toString());
+        assertEquals("Student Alice Emily", modifiedStudent.getFullName());
+        assertEquals("student.alice@gmail.com", modifiedStudent.getEmailAddress());
+
+        //Check if the other student's properties not modified
+        Student originalStudent = repository.findStudentById(UUID.fromString(bobId));
+        assertEquals(bobId, originalStudent.getId().toString());
+        assertEquals("Student Bob", originalStudent.getFullName());
+        assertEquals("student.bob@gmail.com", originalStudent.getEmailAddress());
 
         //reset database for further tests
         repository.deleteAll();
@@ -193,7 +228,7 @@ public class StudentRestControllerModifyUnitTest {
 
         //Get student and check its size
         List<Student> studentList = repository.findAllBy();
-        assertEquals(studentList.size(), 1);
+        assertEquals(1, studentList.size());
 
         //Modify the created student
         //The id should be in string format
@@ -218,6 +253,9 @@ public class StudentRestControllerModifyUnitTest {
         repository.deleteAll();
     }
 
+    /**
+     * Function to create a standard test student
+     */
     private void createTestStudent(){
         Student studentAlice = new Student();
         studentAlice.setEmailAddress("student.alice@gmail.com");

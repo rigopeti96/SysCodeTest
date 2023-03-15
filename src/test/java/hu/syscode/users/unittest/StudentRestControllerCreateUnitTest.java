@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -59,7 +60,12 @@ public class StudentRestControllerCreateUnitTest {
         MockHttpServletResponse response = result.getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals(response.getContentAsString(), expectedMessage);
+        assertEquals(expectedMessage, response.getContentAsString());
+
+        //Check the created student's data
+        List<Student> aliceStudent = repository.findAllBy();
+        assertEquals(1, aliceStudent.size());
+        assertEquals("student.alice@gmail.com", aliceStudent.get(0).getEmailAddress());
     }
 
     /**
