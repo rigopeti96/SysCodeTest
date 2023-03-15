@@ -47,7 +47,7 @@ public class StudentRestControllerModifyUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(1, studentList.size());
 
         //Modify the created student
@@ -66,7 +66,7 @@ public class StudentRestControllerModifyUnitTest {
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
         assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
 
-        List<Student> studentModifiedList = repository.findAllBy();
+        List<Student> studentModifiedList = repository.findAllByOrderByFullName();
         Student modifiedStudent = studentModifiedList.get(0);
         assertEquals(studentList.get(0).getId().toString(), modifiedStudent.getId().toString());
         assertEquals("student.alice2@gmail.com", modifiedStudent.getEmailAddress());
@@ -86,7 +86,7 @@ public class StudentRestControllerModifyUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(1, studentList.size());
 
         //Modify the created student
@@ -105,7 +105,7 @@ public class StudentRestControllerModifyUnitTest {
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
         assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
 
-        List<Student> studentModifiedList = repository.findAllBy();
+        List<Student> studentModifiedList = repository.findAllByOrderByFullName();
         Student modifiedStudent = studentModifiedList.get(0);
         assertEquals(studentList.get(0).getId().toString(), modifiedStudent.getId().toString());
         assertEquals("Student Alice Emily", modifiedStudent.getFullName());
@@ -132,7 +132,7 @@ public class StudentRestControllerModifyUnitTest {
         repository.save(studentBob);
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(2, studentList.size());
 
         //Get both students' id
@@ -163,7 +163,7 @@ public class StudentRestControllerModifyUnitTest {
         assertEquals(HttpStatus.OK.value(), modifyResponse.getStatus());
         assertEquals(expectedModifyMessage, modifyResponse.getContentAsString());
 
-        List<Student> studentModifiedList = repository.findAllBy();
+        List<Student> studentModifiedList = repository.findAllByOrderByFullName();
         assertEquals(2, studentModifiedList.size());
 
         //Check if the modification was succesful
@@ -192,7 +192,7 @@ public class StudentRestControllerModifyUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(studentList.size(), 1);
 
         //Modify the created student
@@ -227,7 +227,7 @@ public class StudentRestControllerModifyUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(1, studentList.size());
 
         //Modify the created student

@@ -46,7 +46,7 @@ public class StudentRestControllerCreateUnitTest {
      */
     @Test
     public void createStudentWithCorrectData() throws Exception {
-        String exampleCourseJson = "{\"name\":\"Student Alice\",\"emailAddress\":\"student.alice@gmail.com\"}";
+        String exampleCourseJson = "{\"fullName\":\"Student Alice\",\"emailAddress\":\"student.alice@gmail.com\"}";
 
         String expectedMessage = "Save was successful!";
 
@@ -63,9 +63,10 @@ public class StudentRestControllerCreateUnitTest {
         assertEquals(expectedMessage, response.getContentAsString());
 
         //Check the created student's data
-        List<Student> aliceStudent = repository.findAllBy();
+        List<Student> aliceStudent = repository.findAllByOrderByFullName();
         assertEquals(1, aliceStudent.size());
         assertEquals("student.alice@gmail.com", aliceStudent.get(0).getEmailAddress());
+        assertEquals("Student Alice", aliceStudent.get(0).getFullName());
     }
 
     /**
@@ -75,7 +76,7 @@ public class StudentRestControllerCreateUnitTest {
     @Test
     public void createStudentWithId_ExpectedError(){
         UUID id = UUID.fromString("b47a951a-c2b5-11ed-afa1-0242ac120002");
-        String exampleCourseJson = "{\"id\":\""+ id +"\",\"name\":\"Student Alice\",\"emailAddress\":\"student.alice@gmail.com\"}";
+        String exampleCourseJson = "{\"id\":\""+ id +"\",\"fullName\":\"Student Alice\",\"emailAddress\":\"student.alice@gmail.com\"}";
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .post("/api/student/addStudent")

@@ -47,7 +47,7 @@ public class StudentRestControllerDeleteUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(studentList.size(), 1);
 
         //Delete the created student
@@ -67,7 +67,7 @@ public class StudentRestControllerDeleteUnitTest {
         assertEquals(response.getContentAsString(), expectedDeleteMessage);
 
         //Check if the list is empty
-        List<Student> studentListAfterDelete = repository.findAllBy();
+        List<Student> studentListAfterDelete = repository.findAllByOrderByFullName();
         assertEquals(studentListAfterDelete.size(), 0);
 
         //Remove all user for further tests
@@ -91,7 +91,7 @@ public class StudentRestControllerDeleteUnitTest {
         repository.save(studentBob);
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(studentList.size(), 2);
 
         //Get both students' id
@@ -123,7 +123,7 @@ public class StudentRestControllerDeleteUnitTest {
         assertEquals(response.getContentAsString(), expectedDeleteMessage);
 
         //Check if the remaining student is Student Bob
-        List<Student> studentAfterDeleteList = repository.findAllBy();
+        List<Student> studentAfterDeleteList = repository.findAllByOrderByFullName();
         assertEquals(studentAfterDeleteList.size(), 1);
         assertEquals(studentAfterDeleteList.get(0).getId().toString(), bobId);
         assertEquals(studentAfterDeleteList.get(0).getFullName(), "Student Bob");
@@ -143,7 +143,7 @@ public class StudentRestControllerDeleteUnitTest {
         createTestStudent();
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(studentList.size(), 1);
 
         //Try to delete the created student without id
@@ -180,7 +180,7 @@ public class StudentRestControllerDeleteUnitTest {
         UUID id = UUID.fromString("b47a951a-c2b5-11ed-afa1-0242ac120002");
 
         //Get student and check its size
-        List<Student> studentList = repository.findAllBy();
+        List<Student> studentList = repository.findAllByOrderByFullName();
         assertEquals(studentList.size(), 1);
 
         //Try to delete the created student with wrong id

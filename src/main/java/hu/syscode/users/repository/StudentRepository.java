@@ -13,7 +13,7 @@ public interface StudentRepository extends CrudRepository<Student, Integer> {
      * Find all students in DB
      * @return list of students
      */
-    List<Student> findAllBy();
+    List<Student> findAllByOrderByFullName();
 
     /**
      * Find a specific student with given id

@@ -31,7 +31,7 @@ public class StudentController {
     @GetMapping("/getStudents")
     public List<Student> getStudents(){
         logger.debug("List request");
-        return studentRepository.findAllBy();
+        return studentRepository.findAllByOrderByFullName();
     }
 
     /**
