@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -145,13 +146,49 @@ public class StudentRestControllerDeleteUnitTest {
         List<Student> studentList = repository.findAllBy();
         assertEquals(studentList.size(), 1);
 
-        //Modify the created student
-        //The id should be in string format
-        String exampleCourseModifyJson = "{\"fullName\":\"Student Alice Emily\",\"emailAddress\":\"student.adrian@gmail.com\"}";
-        String expectedMessage = "ID field must not be empty!";
+        //Try to delete the created student without id
+        String exampleCourseModifyJson = "{ }";
+        String expectedMessage = "Student was not found!";
 
         RequestBuilder requestModifyBuilder = MockMvcRequestBuilders
-                .put("/api/student/modifyStudent")
+                .delete("/api/student/deleteStudent")
+                .accept(MediaType.APPLICATION_JSON).content(exampleCourseModifyJson)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            MvcResult result = mockMvc.perform(requestModifyBuilder).andReturn();
+        });
+
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        //reset database for further tests
+        repository.deleteAll();
+    }
+
+    /**
+     * Test case: create a user as it is expected then we try to delete it but without id
+     * Expected result: server throw an exception with the declared message
+     */
+    @Test
+    public void createStudentWithCorrectDataAndDeleteWithWrongId_ExpectedError() {
+        //Create a new student
+        createTestStudent();
+
+        //Create a test UUID
+        UUID id = UUID.fromString("b47a951a-c2b5-11ed-afa1-0242ac120002");
+
+        //Get student and check its size
+        List<Student> studentList = repository.findAllBy();
+        assertEquals(studentList.size(), 1);
+
+        //Try to delete the created student with wrong id
+        String exampleCourseModifyJson = "{\"id\":\""+ id +"\"}";
+        String expectedMessage = "Student was not found!";
+
+        RequestBuilder requestModifyBuilder = MockMvcRequestBuilders
+                .delete("/api/student/deleteStudent")
                 .accept(MediaType.APPLICATION_JSON).content(exampleCourseModifyJson)
                 .contentType(MediaType.APPLICATION_JSON);
 
